@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { Outlet, Link, useLocation } from "react-router";
 import { MapPin, Phone, Instagram, Facebook, Share2, Star } from "lucide-react";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 
 export function Layout() {
   const location = useLocation();
   const [scrolled, setScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -14,6 +15,10 @@ export function Layout() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location.pathname]);
 
   const navLinks = [
     { name: "Home", path: "/" },
@@ -72,8 +77,70 @@ export function Layout() {
             >
               Book Now
             </motion.button>
+
+            {/* Mobile Hamburger Button */}
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="p-2 md:hidden text-foreground focus:outline-none z-50 relative"
+              aria-label="Toggle Menu"
+            >
+              <div className="w-6 h-5 relative flex items-center justify-center">
+                <motion.span
+                  animate={isMobileMenuOpen ? { rotate: 45, y: 0 } : { rotate: 0, y: -6 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                  className="absolute w-6 h-0.5 bg-foreground rounded-full"
+                />
+                <motion.span
+                  animate={isMobileMenuOpen ? { opacity: 0, scale: 0 } : { opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute w-6 h-0.5 bg-foreground rounded-full"
+                />
+                <motion.span
+                  animate={isMobileMenuOpen ? { rotate: -45, y: 0 } : { rotate: 0, y: 6 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                  className="absolute w-6 h-0.5 bg-foreground rounded-full"
+                />
+              </div>
+            </button>
           </div>
         </div>
+
+        {/* Mobile Menu Panel (Slide-down) */}
+        <AnimatePresence>
+          {isMobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              className="absolute top-full left-0 right-0 bg-background/95 backdrop-blur-2xl border-b border-border shadow-lg z-40 md:hidden flex flex-col px-6 py-8 gap-4"
+            >
+              {navLinks.map((link) => {
+                const isActive = location.pathname === link.path;
+                return (
+                  <Link
+                    key={link.name}
+                    to={link.path}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className={`text-base font-semibold py-2.5 border-b border-border/40 last:border-0 hover:text-primary transition-colors ${
+                      isActive ? "text-primary font-bold" : "text-muted-foreground"
+                    }`}
+                  >
+                    {link.name}
+                  </Link>
+                );
+              })}
+              
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                className="w-full bg-primary text-primary-foreground py-3.5 rounded-full text-sm font-semibold shadow-md mt-4"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Book Now
+              </motion.button>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </header>
 
       <main className="flex-1">
