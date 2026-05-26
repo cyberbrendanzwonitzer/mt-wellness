@@ -301,22 +301,10 @@ export function Pricing() {
                   )}
                   <div className={`bg-card rounded-3xl p-8 border ${
                     membership.featured 
-                      ? 'border-[#c56d3c]/40 shadow-lg overflow-hidden' 
+                      ? 'border-[#c56d3c] shadow-lg' 
                       : 'border-border shadow-sm'
                   } transition-all flex flex-col h-full relative`}
                   >
-                    {/* Featured Card Gold/Terracotta Border Sweep (Idea #16) */}
-                    {membership.featured && (
-                      <div className="absolute inset-0 rounded-3xl p-[2px] overflow-hidden pointer-events-none z-0">
-                        <motion.div
-                          className="absolute inset-0 bg-[conic-gradient(from_0deg,transparent_30%,#c56d3c_50%,transparent_70%)]"
-                          animate={{ rotate: 360 }}
-                          transition={{ repeat: Infinity, duration: 5, ease: "linear" }}
-                          style={{ width: "200%", height: "200%", top: "-50%", left: "-50%" }}
-                        />
-                        <div className="absolute inset-[2px] bg-[#fcfbf9] dark:bg-card rounded-[22px] -z-10" />
-                      </div>
-                    )}
                     <div className="relative z-10 flex flex-col flex-grow">
                       <h3 className="font-serif text-2xl font-bold text-primary mb-2">{membership.title}</h3>
                       <p className="text-muted-foreground text-sm mb-6 h-10">{membership.subtitle}</p>
